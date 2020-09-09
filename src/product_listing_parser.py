@@ -94,7 +94,10 @@ class ProductListingParser:
     def _parse_rating(row_listing: Tag) -> int:
         """ Parse rating from a row of listing """
         details = row_listing.find("div", attrs={"class": "olpSellerColumn"})
-        rating = details.find("p").text.strip().replace("\n", "")
+        rating = details.find("p")
+        if rating is None:
+            return 100
+        rating = rating.text.strip().replace("\n", "")
         rating_regex = re.compile(r"(\d+)\s*%")
         match_obj = rating_regex.search(rating)
         return int(match_obj.group(1)) if match_obj is not None else 100
@@ -103,7 +106,10 @@ class ProductListingParser:
     def _parse_no_of_ratings(row_listing: Tag) -> int:
         """ Parse no of user ratings from a row of listing """
         details = row_listing.find("div", attrs={"class": "olpSellerColumn"})
-        no_of_ratings = details.find("p").text.strip().replace("\n", "")
+        no_of_ratings = details.find("p")
+        if no_of_ratings is None:
+            return 0
+        no_of_ratings = no_of_ratings.text.strip().replace("\n", "")
         no_of_ratings_regex = re.compile(r"\(\s*(\d+).*\)")
         match_obj = no_of_ratings_regex.search(no_of_ratings)
         return int(match_obj.group(1)) if match_obj is not None else 0

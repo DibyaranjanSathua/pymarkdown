@@ -3,6 +3,8 @@
 File:           main.py
 Author:         Dibyaranjan Sathua
 Created on:     07/09/20, 2:05 PM
+
+This is the main function to use the repricer tool using console input.
 """
 from src.console import Console
 from src.amazon import Amazon

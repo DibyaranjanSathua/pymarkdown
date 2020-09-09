@@ -3,9 +3,8 @@ File:           amazon.py
 Author:         Dibyaranjan Sathua
 Created on:     07/09/20, 11:46 AM
 """
-from typing import List, Optional
+from typing import List
 import os
-import logging
 
 from src.product import Product
 from src.product_parser import ProductParser
@@ -13,7 +12,6 @@ from src.product_listing import ProductListing
 from src.product_listing_parser import ProductListingParser
 from src.repricer import Repricer
 from src.condition import Condition
-from src.console import Console
 
 
 class Amazon:
@@ -27,8 +25,6 @@ class Amazon:
         self._min_profit = min_profit
         self._input_file = os.path.abspath(input_file)
         self._unprofitable: List[str] = []
-        self._logger = logging.Logger(self.__class__.__name__)
-        self._logger.setLevel(logging.INFO)
 
     def process_input(self):
         """ Read the product information from the file """
@@ -41,19 +37,19 @@ class Amazon:
                     asin: str = line_values[0]
                     condition: int = int(line_values[1])
 
-                    self._logger.info(f"Processing ASIN: {asin}")
+                    print(f"Processing ASIN: {asin}")
 
                     product_url = Amazon.PRODUCT_URL.format(asin)
                     product_listing_url = Amazon.LISTING_URL.format(asin)
 
-                    self._logger.info(f"Parsing product")
+                    print(f"Parsing product")
                     product: Product = ProductParser(product_url).parse()
                     product_listing_parser: ProductListingParser = \
                         ProductListingParser(product_listing_url)
-                    self._logger.info(f"Parsing product listings")
+                    print(f"Parsing product listings")
                     product_listings: List[ProductListing] = product_listing_parser.parse()
 
-                    self._logger.info(f"Repricing")
+                    print(f"Repricing")
                     repricer: Repricer = Repricer(product, product_listings)
                     my_product_listing: ProductListing = product_listing_parser.my_listing
                     repricer.rating_filter = self._target_rating
@@ -71,6 +67,8 @@ class Amazon:
                         output_file.write(f"{price:.2f}\n\n")
                     else:
                         self._unprofitable.append(str(product))
+
+                    print(f"Completed!!!\n\n")
 
     def run(self):
         """ Entry function """
